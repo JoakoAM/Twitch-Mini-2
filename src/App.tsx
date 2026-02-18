@@ -1,4 +1,4 @@
-import { Button, Center, Container, Input, Text } from '@chakra-ui/react'
+import { Button, Center, Container, Flex, Input, Presence, Text, useMediaQuery, } from '@chakra-ui/react'
 import './App.css'
 import { useEffect, useState } from 'react'
 import { PiMaskSadBold } from "react-icons/pi";
@@ -16,7 +16,8 @@ function App() {
   const [streamerName, setStreamerName] = useState("illojuan")
   const [streamerVideo, setStreamerVideo] = useState("")
   const [offlineImage, setOfflineImage] = useState<string>("")
-
+  const [isLandscape] = useMediaQuery(["(orientation: landscape)",])
+  const [isSmallScreen] = useMediaQuery(["(max-width: 768px)"])
   useEffect(() => {
     if (!streamerName) return;
     fetch(`https://twitchbackend-jkcr.onrender.com/offline-image/${streamerName}`)
@@ -66,30 +67,32 @@ function App() {
         h={"100vh"}
         backgroundImage={offlineImage ? `url(${offlineImage})` : "#000000"}
         filter="blur(8px)"
-        transform="scale(1.1)"
+        transform="scale(2.1)"
       >
       </Container>
 
       <Center>
-        <Container centerContent w={"100%"}>
-          <Container left={"200px"} zIndex={"9999"} position={"fixed"} pt={"40px"} w={"500px"}>
-            <Text color={'white'}>¿Quieres cambiar de streamer?</Text>
-            <form onSubmit={onSubmitStreamer}>
-              <Input bg={'whiteAlpha.700'} w={"200px"} {...register("streamer_Name")} />
-              <Button type="submit" ml={"30px"}>Cambiar streamer</Button >
-            </form>
+        <Container display={"flex"} centerContent w={"100%"}>
+          <Container lgTo2xl={{ h: "200px", top: "20px" }} alignItems={"center"} display={`${isLandscape && isSmallScreen ? "flex" : "block"}`} rounded={"2xl"} lgDown={{ top: `${isLandscape && isSmallScreen ? "20px" : "40px"}`, h: "300px" }} bg={"#7371709e"}>
+            <Container top={`${isLandscape && isSmallScreen ? "0px" : "10px"}`} display={`${isLandscape && isSmallScreen ? "grid" : "block"}`} justifyItems={"center"} lg={{}}>
+              <Text textAlign={"justify"} color={'white'}>¿Quieres cambiar de streamer?</Text>
+              <form style={{ justifyItems: "center", display: `${isLandscape && isSmallScreen ? "grid" : "block"}` }} onSubmit={onSubmitStreamer}>
+                <Input lgDown={{ w: "250px" }} bg={'whiteAlpha.400'} lg={{ w: "200px" }} {...register("streamer_Name")} />
+                <Button type="submit" w={{ lgDown: "250px", lg: "200px" }} lg={{ ml: "30px" }} >Cambiar streamer</Button >
+              </form>
+            </Container>
+            <Container lgTo2xl={{ top: "20px" }} lgDown={{ top: `${isLandscape && isSmallScreen ? "" : "20px"}` }} bottom={"24px"} display={`${isLandscape && isSmallScreen ? "grid" : "block"}`} justifyItems={"center"} lg={{}}>
+              <Text textAlign={"justify"} color={'white'}>¿Quieres ver un video?, para eso necesitas el ID. Copia el ID del video de Twitch desde el enlace.</Text>
+              <Text textAlign={"justify"} color={'white'}>EJ: https://www.twitch.tv/videos/2576132664. El id es :2576132664</Text>
+              <form style={{ justifyItems: "center", display: `${isLandscape && isSmallScreen ? "grid" : "block"}` }} onSubmit={onSubmitVideo}>
+                <Input lgDown={{ w: "250px" }} bg={'whiteAlpha.400'} lg={{ w: "200px" }} {...register("streamer_Video")} />
+                <Button type="submit" w={{ lgDown: "250px", lg: "200px" }} lg={{ ml: "30px" }}>Ver video</Button >
+              </form>
+            </Container>
           </Container>
-          <Container left={"300px"} position={"fixed"} pt={"19px"} pl={"500px"}>
-            <Text color={'white'}>¿Quieres ver un video?, para eso necesitas el ID.</Text>
-            <Text color={'white'}>EJ: https://www.twitch.tv/videos/123456789 el ID seria 123456789</Text>
-            <form onSubmit={onSubmitVideo}>
-              <Input bg={'whiteAlpha.700'} w={"200px"} {...register("streamer_Video")} />
-              <Button type="submit" ml={"30px"}>Ver video</Button >
-            </form>
-          </Container>
-          <Center h={"100vh"} w={"100%"}>
+          <Center h={"calc(100vh - 20px)"} w={"100%"}>
             {streamerVideo ? <>
-              <Container left={"140px"}>
+              <Container lg={{ left: "140px" }}>
                 <iframe
                   src={`https://player.twitch.tv/?video=${streamerVideo}&parent=${parent}`}
                   height={`${heighStream}px`}
@@ -98,14 +101,14 @@ function App() {
                 >
                 </iframe>
               </Container>
-              <Container right={"230px"} justifyContent={"center"} alignContent={"center"} w={`${weightChat}px`} h={`${heightChat}px`} bg={"whiteAlpha.700"}>
-                <Text fontSize={"2xl"}>No se puede mostrar el chat en videos  
+              <Container lg={{ right: "230px", justifyContent: "center", alignContent: "center", w: `${weightChat}px`, h: `${heightChat}px`, bg: "whiteAlpha.700" }}>
+                <Text fontSize={"2xl"}>No se puede mostrar el chat en videos
                 </Text>
               </Container>
             </>
               : ""}
             {streamerName ?
-              <>
+              <Container lgDown={{ top: `${isLandscape && isSmallScreen ? "100px" : ""}` }} display={"flex"} alignSelf={"center"} justifySelf={"center"} justifyContent={"center"} alignContent={"center"}>
                 <iframe
                   src={`https://player.twitch.tv/?channel=${streamerName}&parent=${parent}`}
                   height={`${heighStream}px`}
@@ -113,11 +116,14 @@ function App() {
                   allowFullScreen
                 >
                 </iframe>
-                <iframe src={`https://www.twitch.tv/embed/${streamerName}/chat?parent=${parent}`}
-                  height={`${heighStream}px`}
-                  width={`${weightChat}px`}>
-                </iframe>
-              </> : ""}
+                <Presence present={true} hideBelow={"lg"}>
+
+                  <iframe src={`https://www.twitch.tv/embed/${streamerName}/chat?parent=${parent}`}
+                    height={`${heightChat}px`}
+                    width={`${weightChat}px`}>
+                  </iframe>
+                </Presence>
+              </Container> : ""}
           </Center >
         </Container >
       </Center>
