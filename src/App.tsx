@@ -8,8 +8,12 @@ interface FormValues {
   streamer_Video: string
 }
 function App() {
-  const parent= "https://joakoam.github.io"
-  const [streamerName, setStreamerName] = useState("twitch")
+  const parent = "localhost"
+  const heighStream = 480
+  const weightStream = 720
+  const heightChat = 480
+  const weightChat = 300
+  const [streamerName, setStreamerName] = useState("illojuan")
   const [streamerVideo, setStreamerVideo] = useState("")
   const [offlineImage, setOfflineImage] = useState<string>("")
 
@@ -27,10 +31,23 @@ function App() {
       .catch(() => setOfflineImage(""));
   }, [streamerName]);
 
+  useEffect(() => {
+    if (!streamerVideo) return;
+    fetch(`https://twitchbackend-jkcr.onrender.com/offline-image-from-video/${streamerVideo}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.url) {
+          setOfflineImage(data.url);
+        } else {
+          setOfflineImage("");
+        }
+      })
+      .catch(() => setOfflineImage(""));
+  }, [streamerVideo]);
+
   const {
     register,
     handleSubmit,
-    
   } = useForm<FormValues>()
   const onSubmitStreamer = handleSubmit((data) => {
     setStreamerName(data.streamer_Name)
@@ -41,29 +58,30 @@ function App() {
     setStreamerName("")
   })
   return (
+
     <>
+
       <Container position="fixed"
         w={"100%"}
         h={"100vh"}
         backgroundImage={offlineImage ? `url(${offlineImage})` : "#000000"}
-        backgroundSize="cover"
-        backgroundPosition="center"
-        backgroundRepeat="no-repeat"
         filter="blur(8px)"
-        transform="scale(2.05)">
+        transform="scale(1.1)"
+      >
       </Container>
 
       <Center>
-        <Container>
-          <Container zIndex={"9999"} position={"absolute"} pt={"40px"} w={"500px"}>
-            <Text color={'white'}>Quieres cambiar de streamer?</Text>
+        <Container centerContent w={"100%"}>
+          <Container left={"200px"} zIndex={"9999"} position={"fixed"} pt={"40px"} w={"500px"}>
+            <Text color={'white'}>¿Quieres cambiar de streamer?</Text>
             <form onSubmit={onSubmitStreamer}>
               <Input bg={'whiteAlpha.700'} w={"200px"} {...register("streamer_Name")} />
               <Button type="submit" ml={"30px"}>Cambiar streamer</Button >
             </form>
           </Container>
-          <Container position={"absolute"} pt={"40px"} pl={"500px"}>
-            <Text color={'white'}>Quieres ver un video?, para ellos necesitas el ID.</Text>
+          <Container left={"300px"} position={"fixed"} pt={"19px"} pl={"500px"}>
+            <Text color={'white'}>¿Quieres ver un video?, para eso necesitas el ID.</Text>
+            <Text color={'white'}>EJ: https://www.twitch.tv/videos/123456789 el ID seria 123456789</Text>
             <form onSubmit={onSubmitVideo}>
               <Input bg={'whiteAlpha.700'} w={"200px"} {...register("streamer_Video")} />
               <Button type="submit" ml={"30px"}>Ver video</Button >
@@ -71,34 +89,33 @@ function App() {
           </Container>
           <Center h={"100vh"} w={"100%"}>
             {streamerVideo ? <>
-              <iframe
-                src={`https://player.twitch.tv/?video=${streamerVideo}&parent=${parent}`}
-                height="720"
-                width="1080"
-                allowFullScreen
-              >
-              </iframe>
-              <Container justifyContent={"center"} centerContent w={"300px"} h={"720px"} bg={"whiteAlpha.700"} right={"0"}>
-                <Text fontSize={"2xl"}>No se puede mostrar el chat en el video
-
-                </Text>
-                <PiMaskSadBold size={"50px"} />
+              <Container left={"140px"}>
+                <iframe
+                  src={`https://player.twitch.tv/?video=${streamerVideo}&parent=${parent}`}
+                  height={`${heighStream}px`}
+                  width={`${weightStream}px`}
+                  allowFullScreen
+                >
+                </iframe>
               </Container>
-
+              <Container right={"230px"} justifyContent={"center"} alignContent={"center"} w={`${weightChat}px`} h={`${heightChat}px`} bg={"whiteAlpha.700"}>
+                <Text fontSize={"2xl"}>No se puede mostrar el chat en videos  
+                </Text>
+              </Container>
             </>
               : ""}
             {streamerName ?
               <>
                 <iframe
                   src={`https://player.twitch.tv/?channel=${streamerName}&parent=${parent}`}
-                  height="720"
-                  width="1080"
+                  height={`${heighStream}px`}
+                  width={`${weightStream}px`}
                   allowFullScreen
                 >
                 </iframe>
                 <iframe src={`https://www.twitch.tv/embed/${streamerName}/chat?parent=${parent}`}
-                  height="720"
-                  width="300">
+                  height={`${heighStream}px`}
+                  width={`${weightChat}px`}>
                 </iframe>
               </> : ""}
           </Center >
