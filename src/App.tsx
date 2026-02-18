@@ -1,7 +1,6 @@
-import { Button, Center, Container, Flex, Input, Presence, Text, useMediaQuery, } from '@chakra-ui/react'
+import { Button, Center, Container, Input, Presence, Text, useMediaQuery} from '@chakra-ui/react'
 import './App.css'
 import { useEffect, useState } from 'react'
-import { PiMaskSadBold } from "react-icons/pi";
 import { useForm } from 'react-hook-form'
 interface FormValues {
   streamer_Name: string
