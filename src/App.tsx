@@ -8,6 +8,7 @@ interface FormValues {
   streamer_Video: string
 }
 function App() {
+  const parent= "https://joakoam.github.io"
   const [streamerName, setStreamerName] = useState("twitch")
   const [streamerVideo, setStreamerVideo] = useState("")
   const [offlineImage, setOfflineImage] = useState<string>("")
@@ -29,7 +30,6 @@ function App() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
     
   } = useForm<FormValues>()
   const onSubmitStreamer = handleSubmit((data) => {
@@ -72,7 +72,7 @@ function App() {
           <Center h={"100vh"} w={"100%"}>
             {streamerVideo ? <>
               <iframe
-                src={`https://player.twitch.tv/?video=${streamerVideo}&parent=localhost`}
+                src={`https://player.twitch.tv/?video=${streamerVideo}&parent=${parent}`}
                 height="720"
                 width="1080"
                 allowFullScreen
@@ -90,13 +90,13 @@ function App() {
             {streamerName ?
               <>
                 <iframe
-                  src={`https://player.twitch.tv/?channel=${streamerName}&parent=localhost`}
+                  src={`https://player.twitch.tv/?channel=${streamerName}&parent=${parent}`}
                   height="720"
                   width="1080"
                   allowFullScreen
                 >
                 </iframe>
-                <iframe src={`https://www.twitch.tv/embed/${streamerName}/chat?parent=localhost`}
+                <iframe src={`https://www.twitch.tv/embed/${streamerName}/chat?parent=${parent}`}
                   height="720"
                   width="300">
                 </iframe>
