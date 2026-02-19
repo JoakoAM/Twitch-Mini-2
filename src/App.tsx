@@ -60,7 +60,6 @@ function App() {
   return (
 
     <>
-
       <Container position="fixed"
         w={"100%"}
         h={"100vh"}
