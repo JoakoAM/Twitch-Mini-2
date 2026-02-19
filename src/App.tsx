@@ -32,7 +32,7 @@ interface Stream {
 
 const pageSize = 3
 function App() {
-  const parent = "localhost"
+  const parent = "joakoam.github.io"
   const heighStream = 480
   const weightStream = 720
   const heightChat = 480
