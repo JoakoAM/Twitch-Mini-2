@@ -22,10 +22,7 @@ const glassText = {
   hint: "rgba(255,255,255,0.45)",
 }
 
-const glassHover = {
-  transform: "translateY(-2px)",
-  boxShadow: "0 12px 48px rgba(0,0,0,0.45)",
-}
+
 interface Stream {
   id: string
   title: string
@@ -148,7 +145,6 @@ function App() {
   const startRange = (page - 1) * pageSize
   const endRange = startRange + pageSize
   const visibleItems = recentVideos.slice(startRange, endRange);
-  const dominant = Object.values(cardColors)[0]
 
   return (
 
